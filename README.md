@@ -8,30 +8,45 @@
 ```javascript
 // add event listener for the sourceId
 window.addEventListener('message', (event) => {
-	if (event.data.sourceId) {
-    
+  if (event.data.sourceId) {
+
     const mediaConstrains = {
       audio: false,
       video: {
-          mandatory: {
-              chromeMediaSourceId: event.data.sourceId
-              chromeMediaSource: 'screen',
-              maxWidth: window.screen.width > 1920 ? window.screen.width : 1920,
-              maxHeight: window.screen.height > 1080 ? window.screen.height : 1080
-          },
-          optional: []
+        mandatory: {
+          chromeMediaSourceId: event.data.sourceId
+          chromeMediaSource: 'screen',
+          maxWidth: window.screen.width > 1920 ? window.screen.width : 1920,
+          maxHeight: window.screen.height > 1080 ? window.screen.height : 1080
+        },
+        optional: []
       }
     };
-    
+
     navigator.mediaDevices.getUserMedia(mediaConstrains)
       .then( stream => {
         // do something with the stream
       });
-	}
+  }
 });
 
 // trigger sourceId request
 window.postMessage('get-sourceId', '*');
+
+// check if plugin is installed
+function isInstalled() {
+  // sample plugin
+  // https://chrome.google.com/webstore/detail/screen-capturing/pebcbdfnjfbleakaohicllcdcalapfnf
+  const extensionId = 'pebcbdfnjfbleakaohicllcdcalapfnf';
+  const image = document.createElement('img');
+  image.src = 'chrome-extension://' + extensionId + '/icon.png';
+  image.onload = function () {
+    console.log('extension-installed');
+  };
+  image.onerror = function () {
+    console.log('not-installed');
+  };
+}
 
 ```
 
